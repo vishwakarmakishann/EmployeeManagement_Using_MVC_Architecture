@@ -27,10 +27,10 @@
       <div class="container mt-5">
         <div class="card mx-auto mt-3" style="width: 500px">
           <div class="card-header bg-dark text-white text-center">
-            Update Employee
+            Signup
           </div>
           <div class="card-body">
-            <form action="/update/<%= emp._id %>" method="post">
+            <form action="/signup" method="post">
               <div class="form-floating mb-3">
                 <input
                   type="text"
@@ -38,50 +38,46 @@
                   name="name"
                   id="formId1"
                   placeholder=""
-                  value="<%= emp.name %>"
                   required
                 />
                 <label for="formId1">Name</label>
               </div>
               <div class="form-floating mb-3">
                 <input
-                  type="number"
+                  type="email"
                   class="form-control"
-                  name="age"
+                  name="email"
                   id="formId1"
                   placeholder=""
-                  value="<%= emp.age %>"
                   required
                 />
-                <label for="formId1">Age</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input
-                  type="number"
-                  class="form-control"
-                  name="salary"
-                  id="formId1"
-                  placeholder=""
-                  value="<%= emp.salary %>"
-                  required
-                />
-                <label for="formId1">Salary</label>
+                <label for="formId1">Email</label>
               </div>
               <div class="form-floating mb-3">
                 <input
                   type="text"
                   class="form-control"
-                  name="department"
+                  name="username"
                   id="formId1"
                   placeholder=""
-                  value="<%= emp.department %>"
                   required
                 />
-                <label for="formId1">Department</label>
+                <label for="formId1">Username</label>
               </div>
-              <button type="submit" class="btn btn-warning">Update</button>
-              <a name="" id="" class="btn btn-secondary" href="/" role="button"
-                >Cancel</a
+              <div class="form-floating mb-3">
+                <input
+                  type="password"
+                  class="form-control"
+                  name="password"
+                  id="formId1"
+                  placeholder=""
+                  required
+                />
+                <label for="formId1">Password</label>
+              </div>
+              <button type="submit" class="btn btn-warning">SignUp</button>
+              <a name="" id="" class="btn btn-secondary" href="/login" role="button"
+                >Login</a
               >
             </form>
           </div>

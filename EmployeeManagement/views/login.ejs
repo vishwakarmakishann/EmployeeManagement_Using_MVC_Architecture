@@ -27,61 +27,39 @@
       <div class="container mt-5">
         <div class="card mx-auto mt-3" style="width: 500px">
           <div class="card-header bg-dark text-white text-center">
-            Update Employee
+            Login
           </div>
           <div class="card-body">
-            <form action="/update/<%= emp._id %>" method="post">
+            <% if (error) { %>
+  <p style="color:red"><%= error %></p>
+<% } %>
+            <form action="/login" method="post">
+              
               <div class="form-floating mb-3">
                 <input
                   type="text"
                   class="form-control"
-                  name="name"
+                  name="username"
                   id="formId1"
                   placeholder=""
-                  value="<%= emp.name %>"
                   required
                 />
-                <label for="formId1">Name</label>
+                <label for="formId1">Username</label>
               </div>
               <div class="form-floating mb-3">
                 <input
-                  type="number"
+                  type="password"
                   class="form-control"
-                  name="age"
+                  name="password"
                   id="formId1"
                   placeholder=""
-                  value="<%= emp.age %>"
                   required
                 />
-                <label for="formId1">Age</label>
+                <label for="formId1">Password</label>
               </div>
-              <div class="form-floating mb-3">
-                <input
-                  type="number"
-                  class="form-control"
-                  name="salary"
-                  id="formId1"
-                  placeholder=""
-                  value="<%= emp.salary %>"
-                  required
-                />
-                <label for="formId1">Salary</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  name="department"
-                  id="formId1"
-                  placeholder=""
-                  value="<%= emp.department %>"
-                  required
-                />
-                <label for="formId1">Department</label>
-              </div>
-              <button type="submit" class="btn btn-warning">Update</button>
-              <a name="" id="" class="btn btn-secondary" href="/" role="button"
-                >Cancel</a
+              <button type="submit" class="btn btn-warning">Login</button>
+              <a name="" id="" class="btn btn-secondary" href="/signup" role="button"
+                >Signup</a
               >
             </form>
           </div>
