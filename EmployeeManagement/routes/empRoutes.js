@@ -10,7 +10,7 @@ const {
   signupForm,
   login,
   loginForm,
-  logout
+  logout,
 } = require("../controller/empController");
 const express = require("express");
 const router = express.Router();
@@ -21,11 +21,11 @@ router.post("/update/:id", updateEmp);
 router.get("/addEmpForm", addEmpForm);
 router.get("/updateForm/:id", updateForm);
 router.get("/delete/:id", deleteEmp);
-router.post("/searchEmp",searchEmp);
-router.get("/signup", signupForm)
+router.post("/searchEmp", searchEmp);
+router.get("/signup", signupForm);
 router.post("/signup", signup);
 router.get("/login", loginForm);
-router.post("/login",login);
-router.get("/logout",logout)
+router.post("/login", login);
+router.get("/logout", logout);
 
 module.exports = router;

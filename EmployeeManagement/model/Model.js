@@ -42,4 +42,4 @@ const empModel = mongoose.model("emp", empSchema);
 
 const userModel = mongoose.model("user", userSchema);
 
-module.exports = {empModel, userModel};
+module.exports = { empModel, userModel };

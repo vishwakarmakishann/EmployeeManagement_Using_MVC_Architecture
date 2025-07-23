@@ -1,15 +1,14 @@
-const {empModel, userModel} = require("../model/Model");
+const { empModel, userModel } = require("../model/Model");
 const bcrypt = require("bcryptjs");
 
 const getEmp = async (req, resp) => {
   try {
     if (!req.session.user) {
-    resp.end("Access Denied...");
-  } else {
-    const emp = await empModel.find();
-    resp.render("index", { emp: emp, username: req.session.user});
-  }
-    
+      resp.end("Access Denied...");
+    } else {
+      const emp = await empModel.find();
+      resp.render("index", { emp: emp, username: req.session.user });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -18,11 +17,10 @@ const getEmp = async (req, resp) => {
 const addEmpForm = async (req, resp) => {
   try {
     if (!req.session.user) {
-    resp.end("Access Denied...");
-  } else {
-    resp.render("addEmpForm");
-    
-  }
+      resp.end("Access Denied...");
+    } else {
+      resp.render("addEmpForm");
+    }
   } catch (error) {
     console.log(error);
   }
@@ -30,7 +28,6 @@ const addEmpForm = async (req, resp) => {
 
 const addEmp = async (req, resp) => {
   try {
-    
     const data = new empModel({
       name: req.body.name,
       age: req.body.age,
@@ -47,12 +44,11 @@ const addEmp = async (req, resp) => {
 const updateForm = async (req, resp) => {
   try {
     if (!req.session.user) {
-    resp.end("Access Denied...");
-  } else {
-    
-    const emp = await empModel.findOne({ _id: req.params.id });
-    resp.render("updateEmpForm", { emp: emp });
-  }
+      resp.end("Access Denied...");
+    } else {
+      const emp = await empModel.findOne({ _id: req.params.id });
+      resp.render("updateEmpForm", { emp: emp });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -88,12 +84,10 @@ const deleteEmp = async (req, resp) => {
 
 const searchEmp = async (req, resp) => {
   try {
-  
     if (!req.session.user) {
-    resp.end("Access Denied...");
-  } else {
-    
-  }
+      resp.end("Access Denied...");
+    } else {
+    }
     const emp = await empModel.find({ name: req.body.name });
     resp.render("searchedEmp", { emp: emp });
   } catch (error) {
@@ -110,49 +104,50 @@ const loginForm = (req, resp) => {
   resp.render("login", { error });
 };
 
-const signup = async (req,resp)=>{
+const signup = async (req, resp) => {
   try {
-    const {name, email, username, password} = req.body;
-    const exist = await userModel.findOne({username});
-    if(exist.username==username){
+    const { name, email, username, password } = req.body;
+    const exist = await userModel.findOne({ username });
+    if (exist) {
       resp.redirect("/login");
     } else {
-    const hashPassword = await bcrypt.hash(password, 10);
-    const user = await userModel.create({name, email, username, password:hashPassword});
-    resp.redirect("/login");
+      const hashPassword = await bcrypt.hash(password, 10);
+      const user = await userModel.create({
+        name,
+        email,
+        username,
+        password: hashPassword,
+      });
+      resp.redirect("/login");
     }
   } catch (error) {
     console.log(error);
-    
   }
-}
+};
 
-const login = async (req,resp)=>{
+const login = async (req, resp) => {
   try {
-    const {username,password} = req.body;
-    const user = await userModel.findOne({username});
-    if(user && (await bcrypt.compare(password,user.password))){
-      req.session.user=username;
+    const { username, password } = req.body;
+    const user = await userModel.findOne({ username });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      req.session.user = username;
       resp.redirect("/");
-    }
-    else{
+    } else {
       resp.redirect("/login?error=Wrong%20credentials");
     }
   } catch (error) {
     console.log(error);
-    
   }
-}
+};
 
-const logout = (req, resp)=>{
+const logout = (req, resp) => {
   try {
     req.session.destroy();
     resp.redirect("/login");
   } catch (error) {
     console.log(error);
-    
   }
-}
+};
 
 module.exports = {
   getEmp,
@@ -166,5 +161,5 @@ module.exports = {
   signupForm,
   loginForm,
   login,
-  logout
+  logout,
 };
