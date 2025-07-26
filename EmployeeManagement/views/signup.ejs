@@ -16,7 +16,7 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/style.css">
   </head>
 
   <body>
@@ -25,9 +25,14 @@
     </header>
     <main>
       <div class="container mt-5">
-        <div class="card mx-auto mt-3" style="width: 500px">
-          <div class="card-header bg-dark text-white text-center">Signup</div>
+        <div class="card mt-2 mx-auto" style="width: 500px;">
+            <div class="card-header bg-dark text-white text-center">
+                Signup
+            </div>
           <div class="card-body">
+            <% if(Error){ %>
+            <div class="alert alert-danger"><%= Error %></div>
+            <%}%>
             <form action="/signup" method="post">
               <div class="form-floating mb-3">
                 <input
@@ -73,7 +78,7 @@
                 />
                 <label for="formId1">Password</label>
               </div>
-              <button type="submit" class="btn btn-warning">SignUp</button>
+              <button type="submit" class="btn btn-primary">Signup</button>
               <a
                 name=""
                 id=""
@@ -82,6 +87,7 @@
                 role="button"
                 >Login</a
               >
+              
             </form>
           </div>
         </div>

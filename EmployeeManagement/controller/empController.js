@@ -1,26 +1,11 @@
-const { empModel, userModel } = require("../model/Model");
-const bcrypt = require("bcryptjs");
+const empModel = require("../model/empModel");
 
-const getEmp = async (req, resp) => {
+const addEmpForm = (req, resp) => {
   try {
-    if (!req.session.user) {
-      resp.end("Access Denied...");
-    } else {
-      const emp = await empModel.find();
-      resp.render("index", { emp: emp, username: req.session.user });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const addEmpForm = async (req, resp) => {
-  try {
-    if (!req.session.user) {
-      resp.end("Access Denied...");
-    } else {
-      resp.render("addEmpForm");
-    }
+    resp.render("addEmp", {
+      Error: req.query.error,
+      success: req.query.success,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -28,27 +13,22 @@ const addEmpForm = async (req, resp) => {
 
 const addEmp = async (req, resp) => {
   try {
-    const data = new empModel({
-      name: req.body.name,
-      age: req.body.age,
-      salary: req.body.salary,
-      department: req.body.department,
-    });
-    await data.save();
-    resp.redirect("/");
+    const { id, name, age, salary, department } = req.body;
+    const emp = await empModel.findOne({ id });
+    if (emp) {
+      resp.redirect("/addEmp?error=1");
+    }
+    await empModel.create({ id, name, age, salary, department });
+    resp.redirect("/addEmp?success=1");
   } catch (error) {
     console.log(error);
   }
 };
 
-const updateForm = async (req, resp) => {
+const updateEmpForm = async (req, resp) => {
   try {
-    if (!req.session.user) {
-      resp.end("Access Denied...");
-    } else {
-      const emp = await empModel.findOne({ _id: req.params.id });
-      resp.render("updateEmpForm", { emp: emp });
-    }
+    const emp = await empModel.findById(req.params.id);
+    resp.render("updateEmp", { emp: emp, success: req.query.success });
   } catch (error) {
     console.log(error);
   }
@@ -56,18 +36,15 @@ const updateForm = async (req, resp) => {
 
 const updateEmp = async (req, resp) => {
   try {
-    await empModel.updateOne(
-      { _id: req.params.id },
-      {
-        $set: {
-          name: req.body.name,
-          age: req.body.age,
-          salary: req.body.salary,
-          department: req.body.department,
-        },
-      }
-    );
-    resp.redirect("/");
+    const { id, name, age, salary, department } = req.body;
+    const emp = await empModel.findByIdAndUpdate(req.params.id, {
+      id,
+      name,
+      age,
+      salary,
+      department,
+    });
+    resp.redirect(`/update/${req.params.id}?success=1`);
   } catch (error) {
     console.log(error);
   }
@@ -75,91 +52,23 @@ const updateEmp = async (req, resp) => {
 
 const deleteEmp = async (req, resp) => {
   try {
-    await empModel.deleteOne({ _id: req.params.id });
-    resp.redirect("/");
+    await empModel.findByIdAndDelete(req.params.id);
+    resp.redirect("/dashboard");
   } catch (error) {
     console.log(error);
   }
 };
 
-const searchEmp = async (req, resp) => {
+
+const search = async (req, resp) => {
   try {
-    if (!req.session.user) {
-      resp.end("Access Denied...");
-    } else {
-    }
-    const emp = await empModel.find({ name: req.body.name });
-    resp.render("searchedEmp", { emp: emp });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const signupForm = (req, resp) => {
-  resp.render("signup");
-};
-
-const loginForm = (req, resp) => {
-  const error = req.query.error;
-  resp.render("login", { error });
-};
-
-const signup = async (req, resp) => {
-  try {
-    const { name, email, username, password } = req.body;
-    const exist = await userModel.findOne({ username });
-    if (exist) {
-      resp.redirect("/login");
-    } else {
-      const hashPassword = await bcrypt.hash(password, 10);
-      const user = await userModel.create({
-        name,
-        email,
-        username,
-        password: hashPassword,
-      });
-      resp.redirect("/login");
+    const emp = await empModel.find({$or:[{name:req.body.search},{department:req.body.search}]});
+    if(emp){
+      resp.render("search", {emp:emp});
     }
   } catch (error) {
     console.log(error);
   }
 };
 
-const login = async (req, resp) => {
-  try {
-    const { username, password } = req.body;
-    const user = await userModel.findOne({ username });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      req.session.user = username;
-      resp.redirect("/");
-    } else {
-      resp.redirect("/login?error=Wrong%20credentials");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const logout = (req, resp) => {
-  try {
-    req.session.destroy();
-    resp.redirect("/login");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-module.exports = {
-  getEmp,
-  addEmpForm,
-  addEmp,
-  updateForm,
-  updateEmp,
-  deleteEmp,
-  searchEmp,
-  signup,
-  signupForm,
-  loginForm,
-  login,
-  logout,
-};
+module.exports = { addEmpForm, addEmp, updateEmpForm, updateEmp, deleteEmp, search};
