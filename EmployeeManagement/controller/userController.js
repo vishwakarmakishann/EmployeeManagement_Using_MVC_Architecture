@@ -11,7 +11,7 @@ const signup = async (req, resp) => {
     const { name, email, username, password } = req.body;
     const user = await userModel.findOne({ username });
     if (user) {
-      resp.redirect("/?error=Username%20already%20exist");
+      resp.redirect("/?error=1");
     } else {
       const hashPassword = await bcrypt.hash(password, 10);
       await userModel.create({ name, email, username, password: hashPassword });
@@ -34,7 +34,7 @@ const login = async (req, resp) => {
       req.session.username = username;
       resp.redirect("/dashboard");
     } else {
-      resp.redirect("/login?error=Incorrect%20Username%20or%20Password");
+      resp.redirect("/login?error=1");
     }
   } catch (error) {
     console.log(error);
