@@ -43,8 +43,12 @@ const login = async (req, resp) => {
 
 const dashboard = async (req, resp) => {
   try {
-    const emps = await empModel.find();
-    resp.render("dashboard", { emps: emps, username: req.session.username });
+    if(!req.session.username){
+      resp.redirect("/login");
+    } else {
+      const emps = await empModel.find();
+      resp.render("dashboard", { emps: emps, username: req.session.username });
+    }
   } catch (error) {
     console.log(error);
   }

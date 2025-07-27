@@ -2,10 +2,14 @@ const empModel = require("../model/empModel");
 
 const addEmpForm = (req, resp) => {
   try {
-    resp.render("addEmp", {
-      Error: req.query.error,
-      success: req.query.success,
-    });
+    if (!req.session.username) {
+      resp.redirect("/login");
+    } else {
+      resp.render("addEmp", {
+        Error: req.query.error,
+        success: req.query.success,
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -27,8 +31,12 @@ const addEmp = async (req, resp) => {
 
 const updateEmpForm = async (req, resp) => {
   try {
-    const emp = await empModel.findById(req.params.id);
-    resp.render("updateEmp", { emp: emp, success: req.query.success });
+    if (!req.session.username) {
+      resp.redirect("/login");
+    } else {
+      const emp = await empModel.findById(req.params.id);
+      resp.render("updateEmp", { emp: emp, success: req.query.success });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -52,23 +60,39 @@ const updateEmp = async (req, resp) => {
 
 const deleteEmp = async (req, resp) => {
   try {
-    await empModel.findByIdAndDelete(req.params.id);
-    resp.redirect("/dashboard");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-
-const search = async (req, resp) => {
-  try {
-    const emp = await empModel.find({$or:[{name:req.body.search},{department:req.body.search}]});
-    if(emp){
-      resp.render("search", {emp:emp});
+    if (!req.session.username) {
+      resp.redirect("/login");
+    } else {
+      await empModel.findByIdAndDelete(req.params.id);
+      resp.redirect("/dashboard");
     }
   } catch (error) {
     console.log(error);
   }
 };
 
-module.exports = { addEmpForm, addEmp, updateEmpForm, updateEmp, deleteEmp, search};
+const search = async (req, resp) => {
+  try {
+    const keyword = req.body.search;
+    const emp = await empModel.find({
+      $or: [
+        { name: { $regex: keyword, $options: "i" } },
+        { department: { $regex: keyword, $options: "i" } },
+      ],
+    });
+    if (emp) {
+      resp.render("search", { emp: emp });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = {
+  addEmpForm,
+  addEmp,
+  updateEmpForm,
+  updateEmp,
+  deleteEmp,
+  search,
+};
